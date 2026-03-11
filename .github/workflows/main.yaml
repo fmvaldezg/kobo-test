@@ -59,7 +59,6 @@ jobs:
           
           print(f'✅ Created GeoJSON with {len(features)} features')
           "
-
       - name: Commit and push if data changed
         run: |
           git config --local user.email "action@github.com"
