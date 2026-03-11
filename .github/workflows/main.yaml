@@ -12,9 +12,16 @@ concurrency:
 jobs:
   update-data:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Pull latest changes
+        run: git pull --rebase origin main
 
       - name: Fetch latest data from KoboToolbox
         env:
@@ -59,17 +66,17 @@ jobs:
           
           print(f'✅ Created GeoJSON with {len(features)} features')
           "
+
       - name: Commit and push if data changed
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git pull --rebase
           git add data.json data.geojson
           
           if git diff --staged --quiet; then
             echo "ℹ️ No changes to commit"
           else
             git commit -m "📍 Data update from KoboToolbox $(date '+%Y-%m-%d %H:%M')"
-            git push
+            git push origin main
             echo "✅ Data update completed"
           fi
