@@ -1,0 +1,75 @@
+name: Update KoboToolbox Data
+
+on:
+  repository_dispatch:
+    types: [kobo-submission]
+  workflow_dispatch:
+
+concurrency:
+  group: kobo-update
+  cancel-in-progress: true
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch latest data from KoboToolbox
+        env:
+          KOBO_TOKEN: ${{ secrets.KOBO_TOKEN }}
+        run: |
+          echo "🔄 Fetching latest data from KoboToolbox..."
+          
+          curl -H "Authorization: Token $KOBO_TOKEN" \
+               "https://kf.kobotoolbox.org/api/v2/assets/aMbMFfnmPQF8whCvW7p8mB/data.json" \
+               -o data.json
+
+      - name: Convert to GeoJSON
+        run: |
+          echo "🗺️ Converting to GeoJSON..."
+          
+          python3 -c "
+          import json
+          
+          with open('data.json', 'r') as f:
+              data = json.load(f)
+          
+          features = []
+          for record in data.get('results', []):
+              geopoint = record.get('_geolocation', [None, None])
+              if geopoint[0] is not None and geopoint[1] is not None:
+                  features.append({
+                      'type': 'Feature',
+                      'geometry': {
+                          'type': 'Point',
+                          'coordinates': [geopoint[1], geopoint[0]]
+                      },
+                      'properties': {k: v for k, v in record.items() if k != '_geolocation'}
+                  })
+          
+          geojson = {
+              'type': 'FeatureCollection',
+              'features': features
+          }
+          
+          with open('data.geojson', 'w') as f:
+              json.dump(geojson, f, indent=2)
+          
+          print(f'✅ Created GeoJSON with {len(features)} features')
+          "
+
+      - name: Commit and push if data changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data.json data.geojson
+          
+          if git diff --staged --quiet; then
+            echo "ℹ️ No changes to commit"
+          else
+            git commit -m "📍 Data update from KoboToolbox $(date '+%Y-%m-%d %H:%M')"
+            git push
+            echo "✅ Data update completed"
+          fi
