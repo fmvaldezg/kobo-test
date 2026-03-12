@@ -305,6 +305,40 @@
         "_validation_status": {},
         "_submitted_by": null
       }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.121685,
+          39.764725
+        ]
+      },
+      "properties": {
+        "_id": 694896843,
+        "formhub/uuid": "f5d4d4dd8d7e4c38afe658bc828c5266",
+        "start": "2026-03-11T10:31:39.247-04:00",
+        "end": "2026-03-12T11:38:48.719-04:00",
+        "Your_Name": "Test 3",
+        "Are_you_affiliated_with_Temple": "yes",
+        "Are_you": "alumni",
+        "Do_you_have_experience_with_GIS_or_maps": "little_experience",
+        "Have_you_used_KoboToolbox_before": "no",
+        "Location": "39.764725 -74.121685 0 0",
+        "__version__": "vtcqsEQYGVpgfJMUJ3E5Lh",
+        "meta/instanceID": "uuid:752a3270-bc4d-4a48-8856-179958120886",
+        "_xform_id_string": "aMbMFfnmPQF8whCvW7p8mB",
+        "_uuid": "752a3270-bc4d-4a48-8856-179958120886",
+        "meta/rootUuid": "uuid:752a3270-bc4d-4a48-8856-179958120886",
+        "_attachments": [],
+        "_status": "submitted_via_web",
+        "_submission_time": "2026-03-12T15:38:49",
+        "_tags": [],
+        "_notes": [],
+        "_validation_status": {},
+        "_submitted_by": null
+      }
     }
   ]
 }
